@@ -1,29 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobileapp/pages/main.dart';
+import 'package:mobileapp/main.dart';
 
 import '../../controllers/home_controller.dart';
-
-class UserData {
-  String username;
-  String password;
-
-  UserData({required this.username, required this.password});
-
-  Map<String, dynamic> toJson() => {
-        'username': username,
-        'password': password,
-      };
-}
-
-class Token {
-  String token;
-
-  Token({required this.token});
-
-  factory Token.fromJson(Map<String, dynamic> json) {
-    return Token(token: json['token']);
-  }
-}
+import '../../services/status_code.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -43,6 +22,7 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
+  String error = '';
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   @override
@@ -81,6 +61,9 @@ class _LoginState extends State<Login> {
               ),
             ),
             Container(
+              child: Text(error, style: TextStyle(color: Colors.red),),
+            ),
+            Container(
               height: 50,
               width: 250,
               margin: const EdgeInsets.only(top: 20),
@@ -90,12 +73,13 @@ class _LoginState extends State<Login> {
                 onPressed: () async {
                   String username = usernameController.text;
                   String password = passwordController.text;
-                  await widget._homeController.loginUser(username, password);
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyApp()));
+                  UserStatusCode statusCode = await widget._homeController.loginUser(username, password);
+                  setState(() {
+                    error = statusCode.message;
+                  });
+                  if (statusCode.name == 200) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+                  }
                 },
                 child: Text(
                   'Вход',

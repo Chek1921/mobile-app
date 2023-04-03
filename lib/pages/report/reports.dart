@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
-import 'package:mobileapp/models/news.dart';
+import 'package:mobileapp/models/reports.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:mobileapp/pages/news/new.dart';
+import 'package:mobileapp/pages/report/report.dart';
 import 'package:mobileapp/services/storage.dart';
 
-class NewsPage extends StatefulWidget {
+class ReportsPage extends StatefulWidget {
   final HomeController _homeController = HomeController();
   @override
-  _NewsPageState createState() => _NewsPageState();
+  _ReportsPageState createState() => _ReportsPageState();
 
   
 }
 
-class _NewsPageState extends State<NewsPage> {
-  List<News> _listNews = [];
+class _ReportsPageState extends State<ReportsPage> {
+  List<Reports> _listReports = [];
+
+  List<dynamic> colorList = [Colors.yellow[300], Colors.cyan[100]];
 
   @override
   void initState() {
     super.initState();
     UsernameUpdate();
-    widget._homeController.getNews().then((listNews) {
+    widget._homeController.getReports().then((listReports) {
       setState(() {
-        _listNews = listNews;
+        _listReports = listReports;
       });
     });
   }
@@ -78,22 +80,22 @@ class _NewsPageState extends State<NewsPage> {
         child: MainDrawer(),
       ),
       body: ListView.builder(
-        itemCount: _listNews.length,
+        itemCount: _listReports.length,
         itemBuilder: (context, index) {
-          final itemNews = _listNews[_listNews.length-index-1];
+          final itemReports = _listReports[index];
           return Container(
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
-            color: Colors.cyan[100],
+            color: colorList[itemReports.vision-1],
             child: Column(
               children: [
-                Text(itemNews.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                Text(itemNews.text, overflow: TextOverflow.ellipsis, maxLines: 4, textAlign: TextAlign.left,),
+                Text(itemReports.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+                Text(itemReports.text, overflow: TextOverflow.ellipsis, maxLines: 2, textAlign: TextAlign.left,),
                 Container(
                   margin: EdgeInsets.only(top: 10),
                   child: OutlinedButton(
                   onPressed: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage(page: itemNews.id)))
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ReportPage(page: itemReports.id)))
                     },
                   child: Text('Подробнее', style: TextStyle(color: Colors.black),),
                   ),
@@ -101,7 +103,7 @@ class _NewsPageState extends State<NewsPage> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                  '${itemNews.timeCreate.split('-')[2].split('T')[0]}.${itemNews.timeCreate.split('-')[1]}.${itemNews.timeCreate.split('-')[0]}г.',
+                  '${itemReports.timeCreate.split('-')[2].split('T')[0]}.${itemReports.timeCreate.split('-')[1]}.${itemReports.timeCreate.split('-')[0]}г.',
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
                   textAlign: TextAlign.right,
                     ),

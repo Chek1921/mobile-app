@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
 import 'package:mobileapp/models/news.dart';
+import 'package:mobileapp/models/receipts.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:mobileapp/pages/news/new.dart';
+import 'package:mobileapp/pages/news/news.dart';
 import 'package:mobileapp/services/storage.dart';
 
-class NewsPage extends StatefulWidget {
+class ReceiptsPage extends StatefulWidget {
   final HomeController _homeController = HomeController();
   @override
-  _NewsPageState createState() => _NewsPageState();
+  _ReceiptsPageState createState() => _ReceiptsPageState();
 
   
 }
 
-class _NewsPageState extends State<NewsPage> {
-  List<News> _listNews = [];
+class _ReceiptsPageState extends State<ReceiptsPage> {
+  List<Receipts> _listReceipts = [];
 
   @override
   void initState() {
     super.initState();
     UsernameUpdate();
-    widget._homeController.getNews().then((listNews) {
+    widget._homeController.getReceipts().then((listReceipts) {
       setState(() {
-        _listNews = listNews;
+        _listReceipts = listReceipts;
       });
     });
   }
@@ -78,36 +79,22 @@ class _NewsPageState extends State<NewsPage> {
         child: MainDrawer(),
       ),
       body: ListView.builder(
-        itemCount: _listNews.length,
+        itemCount: _listReceipts.length,
         itemBuilder: (context, index) {
-          final itemNews = _listNews[_listNews.length-index-1];
-          return Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            color: Colors.cyan[100],
-            child: Column(
-              children: [
-                Text(itemNews.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                Text(itemNews.text, overflow: TextOverflow.ellipsis, maxLines: 4, textAlign: TextAlign.left,),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: OutlinedButton(
-                  onPressed: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage(page: itemNews.id)))
-                    },
-                  child: Text('Подробнее', style: TextStyle(color: Colors.black),),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                  '${itemNews.timeCreate.split('-')[2].split('T')[0]}.${itemNews.timeCreate.split('-')[1]}.${itemNews.timeCreate.split('-')[0]}г.',
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.right,
-                    ),
-                ),
-              ],
-              ),
+          final itemReceipt = _listReceipts[_listReceipts.length-index-1];
+          return ListTile(
+            tileColor: Colors.green[400],
+            title: Text(itemReceipt.name),
+            subtitle: Text(
+              '${itemReceipt.timeCreate.split('-')[2].split('T')[0]}.${itemReceipt.timeCreate.split('-')[1]}.${itemReceipt.timeCreate.split('-')[0]}г.',
+            ),
+            trailing: const Icon(Icons.arrow_forward_rounded),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => NewsPage()));
+            },
           );
         },
       ),

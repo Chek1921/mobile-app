@@ -3,24 +3,33 @@ import 'package:mobileapp/controllers/home_controller.dart';
 import 'package:mobileapp/models/news.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:mobileapp/pages/news/new.dart';
 import 'package:mobileapp/services/storage.dart';
 
-class NewsPage extends StatefulWidget {
+class BillsPage extends StatefulWidget {
   final HomeController _homeController = HomeController();
   @override
-  _NewsPageState createState() => _NewsPageState();
+  _BillsPageState createState() => _BillsPageState();
 
   
 }
 
-class _NewsPageState extends State<NewsPage> {
+class _BillsPageState extends State<BillsPage> {
   List<News> _listNews = [];
 
   @override
   void initState() {
     super.initState();
     UsernameUpdate();
+    getToken().then((String? token) {
+      setState(() {
+        _token = token.toString();
+      });
+    });
+    getRefreshToken().then((String? refresh_token) {
+      setState(() {
+        _refresh_token = refresh_token.toString();
+      });
+    });
     widget._homeController.getNews().then((listNews) {
       setState(() {
         _listNews = listNews;
@@ -28,13 +37,26 @@ class _NewsPageState extends State<NewsPage> {
     });
   }
 
+  String? _token = '';
+  String? _refresh_token = '';
+  String? _username = '';
+
   final SecureStorage storage = SecureStorage();
   String buttonText = '';
-  String? _username = '';
 
   Future<String?> getUsername() async {
     _username = await storage.getUsername();
     return _username;
+  }
+
+  Future<String?> getToken() async {
+    _username = await storage.getToken();
+    return _token;
+  }
+
+  Future<String?> getRefreshToken() async {
+    _refresh_token = await storage.getRefreshToken();
+    return _refresh_token;
   }
 
   void UsernameUpdate() {
@@ -77,40 +99,37 @@ class _NewsPageState extends State<NewsPage> {
       drawer: Drawer(
         child: MainDrawer(),
       ),
-      body: ListView.builder(
-        itemCount: _listNews.length,
-        itemBuilder: (context, index) {
-          final itemNews = _listNews[_listNews.length-index-1];
-          return Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            color: Colors.cyan[100],
-            child: Column(
-              children: [
-                Text(itemNews.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                Text(itemNews.text, overflow: TextOverflow.ellipsis, maxLines: 4, textAlign: TextAlign.left,),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: OutlinedButton(
-                  onPressed: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage(page: itemNews.id)))
-                    },
-                  child: Text('Подробнее', style: TextStyle(color: Colors.black),),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                  '${itemNews.timeCreate.split('-')[2].split('T')[0]}.${itemNews.timeCreate.split('-')[1]}.${itemNews.timeCreate.split('-')[0]}г.',
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.right,
-                    ),
-                ),
-              ],
-              ),
-          );
-        },
-      ),
-    );
+      body: Column(
+        children: [
+          Text('токен: ${_token}'),
+
+      ],)
+      
+      
+      
+      
+      // ListView.builder(
+      //   itemCount: _listNews.length,
+      //   itemBuilder: (context, index) {
+      //     final itemNews = _listNews[_listNews.length-index-1];
+      //     return ListTile(
+      //       tileColor: Colors.grey[400],
+      //       title: Text(itemNews.title),
+      //       subtitle: Text(
+      //         itemNews.text,
+      //         overflow: TextOverflow.ellipsis,
+      //         maxLines: 2,
+      //       ),
+      //       trailing: const Icon(Icons.arrow_forward_rounded),
+      //       onTap: () {
+      //         Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //                 builder: (_) => NewsPage()));
+      //       },
+      //     );
+      //   },
+      // ),
+      );
+     }
   }
-}

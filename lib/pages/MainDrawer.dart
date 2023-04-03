@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mobileapp/api/api_connect.dart';
+import 'package:mobileapp/pages/bills/bills.dart';
 import 'package:mobileapp/pages/news/news.dart';
+import 'package:mobileapp/pages/receipts/receipts.dart';
+import 'package:mobileapp/pages/report/reports.dart';
 
-import 'main.dart';
+import '../main.dart';
+import 'report/create_report.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -50,7 +55,10 @@ class MainDrawer extends StatelessWidget {
 
         ),
         ListTile(
-          onTap: (){},
+          onTap: (){
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => CreateReport()));
+          },
           leading: Icon(
             Icons.report,
             color: Colors.black,
@@ -61,7 +69,11 @@ class MainDrawer extends StatelessWidget {
 
         ),
         ListTile(
-          onTap: (){},
+          onTap: (){
+            refreshToken();
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => BillsPage()));
+          },
           leading: Icon(
             Icons.payments,
             color: Colors.black,
@@ -71,7 +83,10 @@ class MainDrawer extends StatelessWidget {
           ),
 
         ),ListTile(
-          onTap: (){},
+          onTap: (){
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => ReportsPage()));
+          },
           leading: Icon(
             Icons.folder_copy,
             color: Colors.black,
@@ -81,25 +96,16 @@ class MainDrawer extends StatelessWidget {
           ),
 
         ),ListTile(
-          onTap: (){},
+          onTap: (){
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => ReceiptsPage()));
+          },
           leading: Icon(
             Icons.receipt_long,
             color: Colors.black,
           ),
           title:Text(
               "Квитанции"
-          ),
-        ),ListTile(
-          onTap: (){
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => MyApp()));
-          },
-          leading: Icon(
-            Icons.home,
-            color: Colors.black,
-          ),
-          title:Text(
-              "ГЛАВНАЯ"
           ),
         ),
       ],

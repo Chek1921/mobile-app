@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobileapp/controllers/home_controller.dart';
 import 'package:mobileapp/main.dart';
-
-import '../../controllers/home_controller.dart';
-import '../../services/status_code.dart';
+import 'package:mobileapp/pages/auth/registration.dart';
+import 'package:mobileapp/services/status_code.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -73,7 +73,7 @@ class _LoginState extends State<Login> {
                 onPressed: () async {
                   String username = usernameController.text;
                   String password = passwordController.text;
-                  UserStatusCode statusCode = await widget._homeController.loginUser(username, password);
+                  UserLoginStatusCode statusCode = await widget._homeController.loginUser(username, password);
                   setState(() {
                     error = statusCode.message;
                   });
@@ -83,6 +83,22 @@ class _LoginState extends State<Login> {
                 },
                 child: Text(
                   'Вход',
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+            Container(
+              height: 50,
+              width: 250,
+              margin: const EdgeInsets.only(top: 20),
+              decoration: BoxDecoration(
+                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+              child: TextButton(
+                onPressed: () async {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Registration()));
+                },
+                child: Text(
+                  'Регистрация',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),

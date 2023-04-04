@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:mobileapp/pages/news/news.dart';
-import 'package:mobileapp/pages/report/reports.dart';
 import 'package:mobileapp/services/storage.dart';
 
 class CreateReport extends StatefulWidget {
@@ -78,14 +76,15 @@ class _CreateReportState extends State<CreateReport> {
           margin: EdgeInsets.all(20),
           padding: EdgeInsets.all(30),
           decoration: BoxDecoration(
-            color: Colors.yellow[100],
+            color: Colors.yellow[300],
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
             children: <Widget>[
+              Text('Создать жалобу', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
-                margin: const EdgeInsets.only(top: 5),
+                margin: const EdgeInsets.only(top: 20),
                 child: TextField(
                   controller: titleController,
                   decoration: InputDecoration(

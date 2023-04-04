@@ -1,19 +1,20 @@
 import 'dart:convert';
-
+import 'package:mobileapp/api/api_connect.dart';
+import 'package:mobileapp/api/api_models.dart';
+import 'package:mobileapp/models/bills.dart';
+import 'package:mobileapp/models/districts.dart';
 import 'package:mobileapp/models/news.dart';
 import 'package:mobileapp/models/receipts.dart';
 import 'package:mobileapp/models/reports.dart';
 import 'package:mobileapp/services/status_code.dart';
 import 'package:mobileapp/services/storage.dart';
-import '../api/api_connect.dart';
-import '../api/api_models.dart';
 
 class HomeController {
 
-  Future<UserStatusCode> loginUser(String username, String password) async {
+  Future<UserLoginStatusCode> loginUser(String username, String password) async {
     UserLogin userLogin = UserLogin(username: username, password: password);
     Map reply = await loginApi(userLogin);
-    UserStatusCode statusCode = reply.values.first;
+    UserLoginStatusCode statusCode = reply.values.first;
     if (statusCode.name == 200) {
       Token token = Token.fromJson(json.decode(reply.values.last));
 
@@ -24,13 +25,18 @@ class HomeController {
     return statusCode;
   }
 
-  
-  Future<String> createReport(String title, String text) async {
-    CreateReport report = CreateReport(title: title, text: text);
-    String reply = await reportsCreateApi(report);
+  Future<String> registerUser(String username, String email, String password1, String password2, String address, int districtId) async {
+    UserRegistration userRegistration = UserRegistration(username: username, email: email, password1: password1, password2: password2, address: address, districtId: districtId);
+    dynamic result = await registrationApi(userRegistration);
+    String reply = '';
+    if (result[0] == 'YES') {
+      loginUser(username, password1);
+    }
+    result.forEach((element){
+      reply = reply+'${element}\n';
+    });
     return reply;
   }
-
 
   Future<List<News>> getNews() async{
     List<News> allNews = [];
@@ -62,13 +68,49 @@ class HomeController {
     return allReports;
   }
 
+  Future<String> createReport(String title, String text) async {
+    CreateReport report = CreateReport(title: title, text: text);
+    String reply = await reportsCreateApi(report);
+    return reply;
+  }
+
   Future<List<Receipts>> getReceipts() async{
     List<Receipts> allReceipts = [];
     List<dynamic> result = await receiptsListApi();
-    print(result);
     result.forEach((element) {
       allReceipts.add(Receipts.fromJson(element));
     });
     return allReceipts;
   }
+
+  Future<Receipts> getReceipt(int page) async{
+    dynamic result = await receiptApi(page);
+    Receipts receipt = Receipts.fromJson(result);
+    return receipt;
+  }
+
+  Future<List<Districts>> getDistricts() async{
+    List<Districts> allDistricts = [];
+    dynamic result = await districtApi();
+    result.forEach((element) {
+      allDistricts.add(Districts.fromJson(element));
+    });
+    return allDistricts;
+  }
+
+  Future<List<Bills>> getBills() async{
+    List<Bills> allBills = [];
+    List<dynamic> result = await billsListApi();
+    result.forEach((element) {
+      allBills.add(Bills.fromJson(element));
+    });
+    return allBills;
+  }
+
+  Future<String> makePayment(id) async {
+    String result = await paymentApi(id);
+    return 'asd';
+  }
+
 }
+

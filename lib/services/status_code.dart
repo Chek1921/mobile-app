@@ -1,10 +1,10 @@
-class UserStatusCode {
+class UserLoginStatusCode {
   int name;
   late String message;
-  UserStatusCode({required this.name});
+  UserLoginStatusCode({required this.name});
 
-  factory UserStatusCode.fromName(int name) {
-    UserStatusCode statusCode = UserStatusCode(name: name);
+  factory UserLoginStatusCode.fromName(int name) {
+    UserLoginStatusCode statusCode = UserLoginStatusCode(name: name);
     if (statusCode.name == 200) {
       statusCode.message = '';
     } else if (statusCode.name == 401) {

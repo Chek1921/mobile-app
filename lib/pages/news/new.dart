@@ -18,7 +18,7 @@ class _NewPageState extends State<NewPage> {
   int page;
   _NewPageState({required this.page});
 
-  News _listItem = News(id: 0, title: '', text: '', timeCreate: '');
+  dynamic _listItem;
 
   @override
   void initState() {

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
-import 'package:mobileapp/models/news.dart';
 import 'package:mobileapp/models/receipts.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:mobileapp/pages/news/news.dart';
+import 'package:mobileapp/pages/receipts/receipt.dart';
 import 'package:mobileapp/services/storage.dart';
 
 class ReceiptsPage extends StatefulWidget {
@@ -93,7 +92,7 @@ class _ReceiptsPageState extends State<ReceiptsPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => NewsPage()));
+                      builder: (_) => ReceiptPage(page: itemReceipt.id)));
             },
           );
         },

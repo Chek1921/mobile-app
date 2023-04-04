@@ -4,18 +4,18 @@ import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
 import 'package:mobileapp/services/storage.dart';
 
-class ReportPage extends StatefulWidget {
+class ReceiptPage extends StatefulWidget {
   int page;
-  ReportPage({required this.page});
+  ReceiptPage({required this.page});
 
   final HomeController _homeController = HomeController();
   @override
-  _ReportPageState createState() => _ReportPageState(page: page);
+  _ReceiptPageState createState() => _ReceiptPageState(page: page);
 }
 
-class _ReportPageState extends State<ReportPage> {
+class _ReceiptPageState extends State<ReceiptPage> {
   int page;
-  _ReportPageState({required this.page});
+  _ReceiptPageState({required this.page});
 
   dynamic _listItem;
 
@@ -23,7 +23,7 @@ class _ReportPageState extends State<ReportPage> {
   void initState() {
     super.initState();
     UsernameUpdate();
-    widget._homeController.getReport(page).then((listItem) {
+    widget._homeController.getReceipt(page).then((listItem) {
       setState(() {
         _listItem = listItem;
       });
@@ -80,41 +80,40 @@ class _ReportPageState extends State<ReportPage> {
         child: MainDrawer(),
       ),
       body: SingleChildScrollView (
-        child: Column(
-          children: [
-            Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            color: Colors.yellow[300],
-            child: Column(
-              children: [
-                Text(_listItem.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                Text(_listItem.text, textAlign: TextAlign.left,),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                  '${_listItem.timeCreate.split('-')[2].split('T')[0]}.${_listItem.timeCreate.split('-')[1]}.${_listItem.timeCreate.split('-')[0]}г.',
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.right,
-                    ),
+        child: 
+            Column(
+            children: [
+              Container(
+              margin: EdgeInsets.only(top: 50, left: 30, right: 30),
+              padding: EdgeInsets.all(10),
+              color: Colors.grey[300],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Счет №${_listItem.id.toString()}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+                  Divider(
+                      thickness: 1,
+                      height: 20.0,
+                      color: Colors.grey,
+                  ),
+                  Text('Оплата: ${_listItem.name}', textAlign: TextAlign.left,),
+                  Text('Адрес: ${_listItem.address}', textAlign: TextAlign.left,),
+                  Text('Тариф: ${_listItem.rateName}-${_listItem.rateCost}', textAlign: TextAlign.left,),
+                  Text('Счетчик: ${_listItem.currentCount.toString()}', textAlign: TextAlign.left,),
+                  Text('Стоимость: ${_listItem.cost.toString()} тенге', textAlign: TextAlign.left,),
+                  Divider(
+                      thickness: 1,
+                      height: 20.0,
+                      color: Colors.grey,
+                  ),
+                  Icon(Icons.add_task, color: Colors.green, size: 60,),
+                ],
                 ),
-              ],
               ),
-            ),
-            Container(
-            width: 10000,
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            color: Colors.cyan[100],
-            child: Column(
-              children: [
-                Text(_listItem.aTitle, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                Text(_listItem.aText, textAlign: TextAlign.left,),
-              ],
-              ),
-            )
-          ],)
-        )
+            ],)
+          
+        
+      )
     );
   }
 }

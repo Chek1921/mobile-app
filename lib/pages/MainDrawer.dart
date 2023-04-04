@@ -4,8 +4,6 @@ import 'package:mobileapp/pages/bills/bills.dart';
 import 'package:mobileapp/pages/news/news.dart';
 import 'package:mobileapp/pages/receipts/receipts.dart';
 import 'package:mobileapp/pages/report/reports.dart';
-
-import '../main.dart';
 import 'report/create_report.dart';
 
 class MainDrawer extends StatelessWidget {

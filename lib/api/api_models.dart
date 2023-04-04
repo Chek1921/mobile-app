@@ -5,8 +5,8 @@ class UserLogin {
   UserLogin({required this.username, required this.password});
 
   Map<String, dynamic> toDatabaseJson() =>{
-    "username": this.username, 
-    "password": this.password,
+    "username": username, 
+    "password": password,
     };
 }
 
@@ -21,4 +21,24 @@ class Token {
         token: json['access'].toString(),
         refreshToken: json['refresh'].toString());
   }
+}
+
+class UserRegistration {
+  String username;
+  String email;
+  String password1;
+  String password2;
+  String address;
+  int districtId;
+
+  UserRegistration({required this.username, required this.email, required this.password1, required this.password2, required this.address, required this.districtId});
+
+  Map<String, dynamic> toDatabaseJson() =>{
+    "username": username, 
+    "email": email,
+    "password1": password1,
+    "password2": password2,
+    "address": address,
+    "district_id": districtId,
+    };
 }

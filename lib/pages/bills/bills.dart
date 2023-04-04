@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
-import 'package:mobileapp/models/news.dart';
+import 'package:mobileapp/models/bills.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
+import 'package:mobileapp/pages/news/new.dart';
+import 'package:mobileapp/pages/receipts/receipt.dart';
+import 'package:mobileapp/pages/receipts/receipts.dart';
 import 'package:mobileapp/services/storage.dart';
 
 class BillsPage extends StatefulWidget {
@@ -14,49 +17,26 @@ class BillsPage extends StatefulWidget {
 }
 
 class _BillsPageState extends State<BillsPage> {
-  List<News> _listNews = [];
+  List<Bills> _listBills = [];
 
   @override
   void initState() {
     super.initState();
     UsernameUpdate();
-    getToken().then((String? token) {
+    widget._homeController.getBills().then((listBills) {
       setState(() {
-        _token = token.toString();
-      });
-    });
-    getRefreshToken().then((String? refresh_token) {
-      setState(() {
-        _refresh_token = refresh_token.toString();
-      });
-    });
-    widget._homeController.getNews().then((listNews) {
-      setState(() {
-        _listNews = listNews;
+        _listBills = listBills;
       });
     });
   }
 
-  String? _token = '';
-  String? _refresh_token = '';
-  String? _username = '';
-
   final SecureStorage storage = SecureStorage();
   String buttonText = '';
+  String? _username = '';
 
   Future<String?> getUsername() async {
     _username = await storage.getUsername();
     return _username;
-  }
-
-  Future<String?> getToken() async {
-    _username = await storage.getToken();
-    return _token;
-  }
-
-  Future<String?> getRefreshToken() async {
-    _refresh_token = await storage.getRefreshToken();
-    return _refresh_token;
   }
 
   void UsernameUpdate() {
@@ -99,37 +79,44 @@ class _BillsPageState extends State<BillsPage> {
       drawer: Drawer(
         child: MainDrawer(),
       ),
-      body: Column(
-        children: [
-          Text('токен: ${_token}'),
-
-      ],)
-      
-      
-      
-      
-      // ListView.builder(
-      //   itemCount: _listNews.length,
-      //   itemBuilder: (context, index) {
-      //     final itemNews = _listNews[_listNews.length-index-1];
-      //     return ListTile(
-      //       tileColor: Colors.grey[400],
-      //       title: Text(itemNews.title),
-      //       subtitle: Text(
-      //         itemNews.text,
-      //         overflow: TextOverflow.ellipsis,
-      //         maxLines: 2,
-      //       ),
-      //       trailing: const Icon(Icons.arrow_forward_rounded),
-      //       onTap: () {
-      //         Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (_) => NewsPage()));
-      //       },
-      //     );
-      //   },
-      // ),
-      );
-     }
+      body: ListView.builder(
+        itemCount: _listBills.length,
+        itemBuilder: (context, index) {
+          final itemBills = _listBills[index];
+          return Container(
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
+            color: Colors.grey[700],
+            child: Column(
+              children: [
+                Text(itemBills.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white),),
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Показание счетчика: ${itemBills.currentCount.toString()} у.е.', style: TextStyle(color: Colors.white)),
+                      Text('Текущий тариф: за 1 у.е. к оплате ${itemBills.rate.toString()} тенге', style: TextStyle(color: Colors.white)),
+                      Text('К оплате: ${itemBills.cost.toString()} тенге', style: TextStyle(color: Colors.white)),
+                      Text('Послденяя оплата: ${itemBills.timePay.split('-')[2].split('T')[0]}.${itemBills.timePay.split('-')[1]}.${itemBills.timePay.split('-')[0]}г.', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: OutlinedButton(
+                  onPressed: () async {
+                    String result = await widget._homeController.makePayment(itemBills.id);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptsPage()));
+                    },
+                  child: Text('Оплатить', style: TextStyle(color: Colors.white),),
+                  ),
+                ),
+              ],
+              ),
+          );
+        },
+      ),
+    );
   }
+}

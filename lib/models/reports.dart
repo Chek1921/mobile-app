@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Reports {
   int id;
   String title;
@@ -6,8 +8,8 @@ class Reports {
   String aTitle;
   String aText;
   int vision;
-  // String photo;
-  Reports({required this.id, required this.vision, required this.title, required this.text, required this.timeCreate, required this.aTitle, required this.aText});
+  String photo;
+  Reports({required this.id, required this.vision, required this.title, required this.text, required this.timeCreate, required this.aTitle, required this.aText, required this.photo});
   
   factory Reports.fromJson(Map<String, dynamic> json) {
     if (json['a_title'] == '') {
@@ -20,6 +22,7 @@ class Reports {
         text: json['text'],
         aTitle: json['a_title'],
         aText: json['a_text'],
+        photo: json['photo'],
         timeCreate: json['time_create']);
   }
 }
@@ -27,10 +30,12 @@ class Reports {
 class CreateReport {
   String title;
   String text;
-  CreateReport({required this.title, required this.text});
+  dynamic photo;
+  CreateReport({required this.title, required this.text, required this.photo});
 
   Map<String, dynamic> toDatabaseJson() =>{
-    "title": this.title,
-    "text": this.text,
+    "title": title,
+    "text": text,
+    "photo": photo,
     };
 }

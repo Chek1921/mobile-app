@@ -40,7 +40,7 @@ class _RegistrationState extends State<Registration> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Авторизация"),
+        title: Text("Регистрация"),
       ),
       body: SingleChildScrollView(
         child: Column(

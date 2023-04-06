@@ -3,8 +3,7 @@ import 'package:mobileapp/controllers/home_controller.dart';
 import 'package:mobileapp/models/bills.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:mobileapp/pages/news/new.dart';
-import 'package:mobileapp/pages/receipts/receipt.dart';
+import 'package:mobileapp/pages/bills/bill_create.dart';  
 import 'package:mobileapp/pages/receipts/receipts.dart';
 import 'package:mobileapp/services/storage.dart';
 
@@ -37,6 +36,10 @@ class _BillsPageState extends State<BillsPage> {
   Future<String?> getUsername() async {
     _username = await storage.getUsername();
     return _username;
+  }
+
+  void goCreate(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => BillCreatePage()));
   }
 
   void UsernameUpdate() {
@@ -116,6 +119,15 @@ class _BillsPageState extends State<BillsPage> {
               ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.grey,
+        onPressed: goCreate,
+        tooltip: 'Increment',
+        child: const Icon(
+          Icons.add,
+          color: Colors.black54,
+          ),
       ),
     );
   }

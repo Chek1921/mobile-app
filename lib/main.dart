@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobileapp/pages/news/news.dart';
-import 'package:mobileapp/services/storage.dart';
-
-import 'pages/MainDrawer.dart';
-import 'pages/auth/login.dart';
 
 void main() {
   runApp(const MyApp());

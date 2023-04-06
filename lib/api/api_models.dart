@@ -42,3 +42,13 @@ class UserRegistration {
     "district_id": districtId,
     };
 }
+
+class UserForgot {
+  String email;
+
+  UserForgot({required this.email});
+
+  Map<String, dynamic> toDatabaseJson() =>{
+    "email": email,
+    };
+}

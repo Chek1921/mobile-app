@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:mobileapp/api/api_connect.dart';
 import 'package:mobileapp/api/api_models.dart';
+import 'package:mobileapp/models/bill_names.dart';
 import 'package:mobileapp/models/bills.dart';
 import 'package:mobileapp/models/districts.dart';
 import 'package:mobileapp/models/news.dart';
@@ -38,6 +40,12 @@ class HomeController {
     return reply;
   }
 
+  Future<String> forgotUser(String email) async {
+    UserForgot userForgot = UserForgot(email: email);
+    String result = await forgotApi(userForgot);
+    return result;
+  }
+
   Future<List<News>> getNews() async{
     List<News> allNews = [];
     List<dynamic> result = await newsApi();
@@ -68,9 +76,18 @@ class HomeController {
     return allReports;
   }
 
-  Future<String> createReport(String title, String text) async {
-    CreateReport report = CreateReport(title: title, text: text);
-    String reply = await reportsCreateApi(report);
+  Future<String> createReport(String title, String text, File? file) async {
+    dynamic reply = '';
+    if (file != null) {
+      List<int> imageBytes = file.readAsBytesSync();
+      String base64Image = base64Encode(imageBytes);
+      CreateReport report = CreateReport(title: title, text: text, photo: base64Image);
+      String reply = await reportsCreateApi(report);
+    }
+    else {
+      CreateReport report = CreateReport(title: title, text: text, photo: file);
+      String reply = await reportsCreateApi(report);
+    }
     return reply;
   }
 
@@ -98,6 +115,15 @@ class HomeController {
     return allDistricts;
   }
 
+  Future<List<BillNames>> getBillName() async{
+    List<BillNames> allBillnames = [];
+    dynamic result = await billNameApi();
+    result.forEach((element) {
+      allBillnames.add(BillNames.fromJson(element));
+    });
+    return allBillnames;
+  }
+
   Future<List<Bills>> getBills() async{
     List<Bills> allBills = [];
     List<dynamic> result = await billsListApi();
@@ -107,10 +133,15 @@ class HomeController {
     return allBills;
   }
 
+  Future<String> createBill(int id, double count) async {
+    CreateBill bill = CreateBill(name: id, currentCount: count);
+    String reply = await billsCreateApi(bill);
+    return reply;
+  }
+
   Future<String> makePayment(id) async {
     String result = await paymentApi(id);
     return 'asd';
   }
-
 }
 

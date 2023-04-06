@@ -17,17 +17,15 @@ class _ReportPageState extends State<ReportPage> {
   int page;
   _ReportPageState({required this.page});
 
-  dynamic _listItem;
-
   @override
   void initState() {
     super.initState();
     UsernameUpdate();
-    widget._homeController.getReport(page).then((listItem) {
-      setState(() {
-        _listItem = listItem;
-      });
-    });
+    // widget._homeController.getReport(page).then((listItem) {
+      // setState(() {
+        // _listItem = listItem;
+      // });
+    // });
   }
 
   final SecureStorage storage = SecureStorage();
@@ -51,6 +49,60 @@ class _ReportPageState extends State<ReportPage> {
         }
       });
     });
+  }
+
+  Widget checkPhoto(photo) {
+    if (photo != null) {
+      return Image.network(
+            photo,
+            fit: BoxFit.cover,
+          );
+    } else {
+      return Text('');
+    }
+  }
+
+  Future<List<Widget>> fetchReport(int page) async {
+     List<Widget> widgets = await widget._homeController.getReport(page).then((_listItem) {
+        return <Widget> [
+        Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
+              color: Colors.yellow[300],
+              child: Column(
+                children: [
+                  Text(_listItem.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+                  Text(_listItem.text, textAlign: TextAlign.left,),
+                  checkPhoto(_listItem.photo),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                    '${_listItem.timeCreate.split('-')[2].split('T')[0]}.${_listItem.timeCreate.split('-')[1]}.${_listItem.timeCreate.split('-')[0]}г.',
+                    style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                    textAlign: TextAlign.right,
+                      ),
+                  ),
+                ],
+                ),
+            ),
+            Container(
+              width: 10000,
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
+              color: Colors.cyan[100],
+              child: Column(
+                children: [
+                  Text(_listItem.aTitle, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+                  Text(_listItem.aText, textAlign: TextAlign.left,),
+                ],
+                ),
+            )
+          ],
+        )];
+      });
+    return widgets;
   }
 
   @override
@@ -79,42 +131,25 @@ class _ReportPageState extends State<ReportPage> {
       drawer: Drawer(
         child: MainDrawer(),
       ),
-      body: SingleChildScrollView (
-        child: Column(
-          children: [
-            Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            color: Colors.yellow[300],
-            child: Column(
-              children: [
-                Text(_listItem.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                Text(_listItem.text, textAlign: TextAlign.left,),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                  '${_listItem.timeCreate.split('-')[2].split('T')[0]}.${_listItem.timeCreate.split('-')[1]}.${_listItem.timeCreate.split('-')[0]}г.',
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.right,
-                    ),
+      body: FutureBuilder<List<Widget>>(
+          future: fetchReport(page), 
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: snapshot.data!,
                 ),
-              ],
-              ),
-            ),
-            Container(
-            width: 10000,
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            color: Colors.cyan[100],
-            child: Column(
-              children: [
-                Text(_listItem.aTitle, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                Text(_listItem.aText, textAlign: TextAlign.left,),
-              ],
-              ),
-            )
-          ],)
-        )
+              );
+            } else {
+              return Text("Error: ${snapshot.error}");
+            }
+          },
+      ),
     );
   }
 }

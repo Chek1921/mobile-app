@@ -34,6 +34,44 @@ class _ReceiptPageState extends State<ReceiptPage> {
   String buttonText = '';
   String? _username = '';
 
+  Future<List<Widget>> fetchNew(int page) async {
+     List<Widget> widgets = await widget._homeController.getReceipt(page).then((_listItem) {
+        return <Widget> [
+        Column(
+            children: [
+              Container(
+              margin: EdgeInsets.only(top: 50, left: 30, right: 30),
+              padding: EdgeInsets.all(10),
+              color: Colors.grey[300],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Счет №${_listItem.id.toString()}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+                  Divider(
+                      thickness: 1,
+                      height: 20.0,
+                      color: Colors.grey,
+                  ),
+                  Text('Оплата: ${_listItem.name}', textAlign: TextAlign.left,),
+                  Text('Адрес: ${_listItem.address}', textAlign: TextAlign.left,),
+                  Text('Тариф: ${_listItem.rateName}-${_listItem.rateCost}', textAlign: TextAlign.left,),
+                  Text('Счетчик: ${_listItem.currentCount.toString()}', textAlign: TextAlign.left,),
+                  Text('Стоимость: ${_listItem.cost.toString()} тенге', textAlign: TextAlign.left,),
+                  Divider(
+                      thickness: 1,
+                      height: 20.0,
+                      color: Colors.grey,
+                  ),
+                  Icon(Icons.add_task, color: Colors.green, size: 60,),
+                ],
+                ),
+              ),
+            ],)
+        ];
+      });
+    return widgets;
+  }
+
   Future<String?> getUsername() async {
     _username = await storage.getUsername();
     return _username;
@@ -80,40 +118,25 @@ class _ReceiptPageState extends State<ReceiptPage> {
         child: MainDrawer(),
       ),
       body: SingleChildScrollView (
-        child: 
-            Column(
-            children: [
-              Container(
-              margin: EdgeInsets.only(top: 50, left: 30, right: 30),
-              padding: EdgeInsets.all(10),
-              color: Colors.grey[300],
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Счет №${_listItem.id.toString()}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
-                  Divider(
-                      thickness: 1,
-                      height: 20.0,
-                      color: Colors.grey,
-                  ),
-                  Text('Оплата: ${_listItem.name}', textAlign: TextAlign.left,),
-                  Text('Адрес: ${_listItem.address}', textAlign: TextAlign.left,),
-                  Text('Тариф: ${_listItem.rateName}-${_listItem.rateCost}', textAlign: TextAlign.left,),
-                  Text('Счетчик: ${_listItem.currentCount.toString()}', textAlign: TextAlign.left,),
-                  Text('Стоимость: ${_listItem.cost.toString()} тенге', textAlign: TextAlign.left,),
-                  Divider(
-                      thickness: 1,
-                      height: 20.0,
-                      color: Colors.grey,
-                  ),
-                  Icon(Icons.add_task, color: Colors.green, size: 60,),
-                ],
+        child: FutureBuilder<List<Widget>>(
+          future: fetchNew(page), 
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: snapshot.data!,
                 ),
-              ),
-            ],)
-          
-        
+              );
+            } else {
+              return Text("Error: ${snapshot.error}");
+            }
+          },       
       )
-    );
+    ));
   }
 }

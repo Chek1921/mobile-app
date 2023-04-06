@@ -1,11 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mobileapp/api/api_connect.dart';
-import '../api/api_models.dart';
 
 class SecureStorage {
   
-  final storage = FlutterSecureStorage();
+  static const storage = FlutterSecureStorage();
 
   Future<void> addTokenToDb(token)  async {
     await storage.write(key: 'token', value: token);

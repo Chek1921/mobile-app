@@ -1,36 +1,49 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
+import 'package:mobileapp/models/bills.dart';
 import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:mobileapp/pages/report/reports.dart';
+import 'package:mobileapp/pages/bills/bills.dart';
 import 'package:mobileapp/services/storage.dart';
+import 'package:select_form_field/select_form_field.dart';
 
-class CreateReport extends StatefulWidget {
+class BillCreatePage extends StatefulWidget {
   final HomeController _homeController = HomeController();
   @override
-  _CreateReportState createState() => _CreateReportState();
+  _BillCreatePageState createState() => _BillCreatePageState();
 }
 
-class _CreateReportState extends State<CreateReport> {
-  TextEditingController titleController = TextEditingController();
-  TextEditingController textController = TextEditingController();
-  
+class _BillCreatePageState extends State<BillCreatePage> {
+  List<Bills> _listBills = [];
+  int _id = 0;
+  List<Map<String, dynamic>> _items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    UsernameUpdate();
+    widget._homeController.getBillName().then((billNames) {
+      setState(() {
+        billNames.forEach((element) {
+          _items.add(element.toDatabaseJson());
+        });
+      });
+    });
+  }
+
   final SecureStorage storage = SecureStorage();
   String buttonText = '';
   String? _username = '';
   String IZI = '';
-  File? _image;
-  String fileText = 'Выбрать изображение';
+  TextEditingController countController = TextEditingController();
 
   Future<String?> getUsername() async {
     _username = await storage.getUsername();
     return _username;
   }
 
-  void usernameUpdate() {
+  void UsernameUpdate() {
     getUsername().then((String? username) {
       setState(() {
         if (username == null) {
@@ -42,12 +55,6 @@ class _CreateReportState extends State<CreateReport> {
         }
       });
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    usernameUpdate();
   }
 
   @override
@@ -82,51 +89,51 @@ class _CreateReportState extends State<CreateReport> {
           margin: EdgeInsets.all(20),
           padding: EdgeInsets.all(30),
           decoration: BoxDecoration(
-            color: Colors.yellow[300],
+            color: Colors.grey[700],
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
             children: <Widget>[
-              Text('Создать жалобу', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                margin: const EdgeInsets.only(top: 20),
-                child: TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
+              Text('Создать счет', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white),),
+              Padding(
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0
+                  ),
+                  child: SelectFormField(
+                    type: SelectFormFieldType.dropdown,
+                    labelText: 'Shape',
+                    icon: Icon(Icons.arrow_drop_down),
+                    style: TextStyle(color: Colors.white,),
+                    decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Назвазание жалобы',
-                      hintText: 'Сломался счетчик'),
-                ),
-              ),
+                      labelStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.white60),
+                      labelText: 'Тип счетчика',
+                      hintText: 'Выберите тип счетчика',
+                      suffixIcon: Icon(Icons.arrow_drop_down),
+                      ),
+                    items: _items,
+                    onChanged: (val) => _id = int.parse(val),
+                  )
+            ),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 15.0, right: 15.0, top: 15, bottom: 0
                     ),
                 child: TextFormField(
-                  controller: textController,
-                  minLines: 5,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                  ],
+                  controller: countController,
                   maxLines: null,
+                  style: TextStyle(color: Colors.white,),
                   decoration: InputDecoration(
+                      labelStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.white60),
                       border: OutlineInputBorder(),
-                      labelText: 'Жалоба',
-                      hintText: 'Содержание'),
-                ),
-              ),
-              Container(
-                height: 50,
-                width: 250,
-                margin: const EdgeInsets.only(top: 10),
-                child: OutlinedButton(
-                  onPressed: () async {
-                    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
-                    setState(() {
-                      _image = File(pickedFile!.path);
-                      fileText = 'Изображение выбрано';
-                    });
-                    print(_image);
-                  },
-                child: Text(fileText, style: TextStyle(color: Colors.black),),
+                      labelText: 'Показание',
+                      hintText: 'Показание счетчика'),
                 ),
               ),
               Container(
@@ -138,13 +145,12 @@ class _CreateReportState extends State<CreateReport> {
                 width: 250,
                 margin: const EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
-                    color: Colors.orange[300], borderRadius: BorderRadius.circular(20)),
+                    color: Colors.black54, borderRadius: BorderRadius.circular(20)),
                 child: TextButton(
                   onPressed: () async {
-                      String title = titleController.text;
-                      String text = textController.text;
-                      if (text != '' && title != '') {
-                        String reply = await widget._homeController.createReport(title, text, _image);
+                      double count = double.parse(countController.text);
+                      if (count != '') {
+                        String reply = await widget._homeController.createBill(_id, count);
                         setState(() {
                           IZI = reply;
                         });
@@ -153,11 +159,12 @@ class _CreateReportState extends State<CreateReport> {
                           IZI = 'ВЫ НЕ УКАЗАЛИ ЗНАЧЕНИЯ';
                         });
                       }
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage()));
+                      
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BillsPage()));
                   },
                   child: Text(
-                    'Отправить',
-                    style: TextStyle(color: Colors.black, fontSize: 25),
+                    'Создать',
+                    style: TextStyle(color: Colors.white, fontSize: 25),
                   ),
                 ),
               ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Bills {
   int id;
   String name;
@@ -22,4 +24,15 @@ class Bills {
         timePay: json['time_pay'],
     );
   }
+}
+
+class CreateBill {
+  int name;
+  double currentCount;
+  CreateBill({required this.name, required this.currentCount});
+
+  Map<String, dynamic> toDatabaseJson() =>{
+    "name": name,
+    "current_count": currentCount,
+    };
 }

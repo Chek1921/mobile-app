@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
 import 'package:mobileapp/main.dart';
+import 'package:mobileapp/pages/auth/forgot.dart';
 import 'package:mobileapp/pages/auth/registration.dart';
 import 'package:mobileapp/services/status_code.dart';
 
@@ -103,6 +104,18 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
+            Container(
+              margin: EdgeInsets.only(top: 30),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Forgot()),
+                  );
+                },
+                child: Text("Забыли пароль?", style: TextStyle(color: Colors.blue),),
+              ),
+            )
           ],
         ),
       ),

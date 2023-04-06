@@ -1,30 +1,34 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:mobileapp/models/bills.dart';
 import 'package:mobileapp/models/reports.dart';
 import 'package:mobileapp/services/status_code.dart';
 import 'package:mobileapp/services/storage.dart';
 import 'api_models.dart';
 
-final _base = "http://192.168.10.117:8000";
-final _signInURL = "/token/";
-final _refreshEndpoint = "/token/refresh/";
-final _signUpEndpoint = "/api/register/";
-final _reportsEndpoint = "/api/reports/";
-final _receiptsEndpoint = "/api/receipts/";
-final _districtEndpoint = "/api/districts/";
-final _registrationEndpoint = "/api/registration/";
-final _billsEndpoint = "/api/bills/";
-final _payEndpoint = "/api/pay/";
+const _base = "http://192.168.10.117:8000";
+const _signInURL = "/token/";
+const _refreshEndpoint = "/token/refresh/";
+const _reportsEndpoint = "/api/reports/";
+const _receiptsEndpoint = "/api/receipts/";
+const _districtEndpoint = "/api/districts/";
+const _billNameEndpoint = "/api/bill_names/";
+const _registrationEndpoint = "/api/registration/";
+const _billsEndpoint = "/api/bills/";
+const _payEndpoint = "/api/pay/";
+const _forgotEndpoint = "/api/forgot_password/";
 
-final _refresh = _base + _refreshEndpoint;
-final _login = _base + _signInURL;
-final _reports = _base + _reportsEndpoint;
-final _receipts = _base + _receiptsEndpoint;
-final _district = _base + _districtEndpoint;
-final _registration = _base + _registrationEndpoint;
-final _bills = _base + _billsEndpoint;
-final _pay = _base + _payEndpoint;
+const _refresh = _base + _refreshEndpoint;
+const _login = _base + _signInURL;
+const _reports = _base + _reportsEndpoint;
+const _receipts = _base + _receiptsEndpoint;
+const _district = _base + _districtEndpoint;
+const _billName = _base + _billNameEndpoint;
+const _registration = _base + _registrationEndpoint;
+const _bills = _base + _billsEndpoint;
+const _pay = _base + _payEndpoint;
+const _forgot = _base + _forgotEndpoint;
 
 
 Future<void> refreshToken() async{
@@ -72,6 +76,20 @@ Future<List> registrationApi(UserRegistration userRegistration) async {
   );
   List<dynamic> result = json.decode(utf8.decode(response.bodyBytes));
   return result;
+}
+
+Future<String> forgotApi(UserForgot userForgot) async {
+  final http.Response response = await http.post(
+    Uri.parse(_forgot),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(userForgot.toDatabaseJson()),
+  );
+  Map<String, dynamic> result = json.decode(utf8.decode(response.bodyBytes));
+  List<dynamic> reply = result['email'];
+  String answer = reply[0];
+  return answer;
 }
 
 Future<List<dynamic>> newsApi() async {
@@ -140,6 +158,27 @@ Future<String> reportsCreateApi(CreateReport report) async {
     refreshToken();
     await Future.delayed(const Duration(seconds: 1));
     return reportsCreateApi(report);
+  }
+  return 'Все случилось';
+}
+
+Future<String> billsCreateApi(CreateBill bill) async {
+  var token = await SecureStorage().getToken();
+  if (token != null) {
+    token = 'Bearer ${token}';
+  }
+  http.Response response = await http.post(
+    Uri.parse(_bills),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': '${token}',
+    },
+    body: jsonEncode(bill.toDatabaseJson())
+  );
+  if (response.statusCode == 401) {
+    refreshToken();
+    await Future.delayed(const Duration(seconds: 1));
+    return billsCreateApi(bill);
   }
   return 'Все случилось';
 }
@@ -218,7 +257,18 @@ Future<List<dynamic>> districtApi() async {
   );
   List<dynamic> result = json.decode(utf8.decode(response.bodyBytes));
   return result;
+}
 
+Future<List<dynamic>> billNameApi() async {
+  http.Response response = await http.get(
+    Uri.parse(_billName),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+  List<dynamic> result = json.decode(utf8.decode(response.bodyBytes));
+  print(result);
+  return result;
 }
 
 Future<List<dynamic>> billsListApi() async {
@@ -239,7 +289,6 @@ Future<List<dynamic>> billsListApi() async {
     return billsListApi();
   }
   List<dynamic> result = json.decode(utf8.decode(response.bodyBytes));
-  print(result);
   return result;
 }
 

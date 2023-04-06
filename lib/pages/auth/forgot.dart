@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileapp/controllers/home_controller.dart';
-import 'package:mobileapp/main.dart';
 import 'package:mobileapp/pages/auth/login.dart';
-import 'package:select_form_field/select_form_field.dart';
 
 class Forgot extends StatefulWidget {
   @override

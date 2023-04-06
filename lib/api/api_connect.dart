@@ -7,7 +7,7 @@ import 'package:mobileapp/services/status_code.dart';
 import 'package:mobileapp/services/storage.dart';
 import 'api_models.dart';
 
-const _base = "http://192.168.10.117:8000";
+const _base = "http://chek1921.pythonanywhere.com/";
 const _signInURL = "/token/";
 const _refreshEndpoint = "/token/refresh/";
 const _reportsEndpoint = "/api/reports/";
@@ -94,7 +94,7 @@ Future<String> forgotApi(UserForgot userForgot) async {
 
 Future<List<dynamic>> newsApi() async {
   var asd = await SecureStorage().getUsername();
-  String url = 'http://192.168.10.117:8000/api/news';
+  String url = 'http://chek1921.pythonanywhere.com/api/news';
   if (asd != null) {
     url = url + '?username=' + asd;
   }
@@ -109,7 +109,7 @@ Future<List<dynamic>> newsApi() async {
 }
 
 Future<dynamic> newApi(page) async {
-  String url = 'http://192.168.10.117:8000/api/news/${page.toString()}/';
+  String url = 'http://chek1921.pythonanywhere.com/api/news/${page.toString()}/';
   http.Response response = await http.get(
     Uri.parse(url),
     headers: <String, String>{
@@ -184,7 +184,7 @@ Future<String> billsCreateApi(CreateBill bill) async {
 }
 
 Future<dynamic> reportApi(page) async {
-  String url = 'http://192.168.10.117:8000/api/reports/${page.toString()}/';
+  String url = '${_reports}${page.toString()}/';
   var token = await SecureStorage().getToken();
   if (token != null) {
     token = 'Bearer ${token}';

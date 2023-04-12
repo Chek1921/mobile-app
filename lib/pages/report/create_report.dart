@@ -124,7 +124,6 @@ class _CreateReportState extends State<CreateReport> {
                       _image = File(pickedFile!.path);
                       fileText = 'Изображение выбрано';
                     });
-                    print(_image);
                   },
                 child: Text(fileText, style: TextStyle(color: Colors.black),),
                 ),
@@ -147,13 +146,13 @@ class _CreateReportState extends State<CreateReport> {
                         String reply = await widget._homeController.createReport(title, text, _image);
                         setState(() {
                           IZI = reply;
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage()));
                         });
                       } else {
                         setState(() {
                           IZI = 'ВЫ НЕ УКАЗАЛИ ЗНАЧЕНИЯ';
                         });
                       }
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage()));
                   },
                   child: Text(
                     'Отправить',

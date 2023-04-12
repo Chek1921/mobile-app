@@ -50,7 +50,7 @@ class HomeController {
     List<News> allNews = [];
     List<dynamic> result = await newsApi();
     result.forEach((element) {
-      allNews.add(News(id: element['id'], title: element['title'], text: element['text'], timeCreate: element['time_create']));
+      allNews.add(News.fromJson(element));
     });
     return allNews;
   }

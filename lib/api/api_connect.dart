@@ -7,7 +7,7 @@ import 'package:mobileapp/services/status_code.dart';
 import 'package:mobileapp/services/storage.dart';
 import 'api_models.dart';
 
-const _base = "http://chek1921.pythonanywhere.com/";
+const _base = "http://13.50.176.175:8000/";
 const _signInURL = "/token/";
 const _refreshEndpoint = "/token/refresh/";
 const _reportsEndpoint = "/api/reports/";
@@ -94,7 +94,7 @@ Future<String> forgotApi(UserForgot userForgot) async {
 
 Future<List<dynamic>> newsApi() async {
   var asd = await SecureStorage().getUsername();
-  String url = 'http://chek1921.pythonanywhere.com/api/news';
+  String url = 'http://13.50.176.175:8000/api/news';
   if (asd != null) {
     url = url + '?username=' + asd;
   }
@@ -109,7 +109,7 @@ Future<List<dynamic>> newsApi() async {
 }
 
 Future<dynamic> newApi(page) async {
-  String url = 'http://chek1921.pythonanywhere.com/api/news/${page.toString()}/';
+  String url = 'http://13.50.176.175:8000/api/news/${page.toString()}/';
   http.Response response = await http.get(
     Uri.parse(url),
     headers: <String, String>{
@@ -267,7 +267,6 @@ Future<List<dynamic>> billNameApi() async {
     },
   );
   List<dynamic> result = json.decode(utf8.decode(response.bodyBytes));
-  print(result);
   return result;
 }
 
@@ -305,6 +304,5 @@ Future<String> paymentApi(id) async {
     },
     body: jsonEncode({'id': id})
   );
-  print(response.body);
   return 'asd';
 }

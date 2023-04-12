@@ -4,6 +4,7 @@ import 'package:mobileapp/pages/MainDrawer.dart';
 import 'package:mobileapp/pages/auth/login.dart';
 import 'package:mobileapp/services/storage.dart';
 
+//ignore: must_be_immutable
 class ReceiptPage extends StatefulWidget {
   int page;
   ReceiptPage({required this.page});

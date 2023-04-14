@@ -24,11 +24,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
   void initState() {
     super.initState();
     UsernameUpdate();
-    widget._homeController.getReceipt(page).then((listItem) {
-      setState(() {
-        _listItem = listItem;
-      });
-    });
   }
 
   final SecureStorage storage = SecureStorage();

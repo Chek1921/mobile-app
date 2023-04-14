@@ -24,11 +24,6 @@ class _NewPageState extends State<NewPage> {
   void initState() {
     super.initState();
     UsernameUpdate();
-    widget._homeController.getNew(page).then((listItem) {
-      setState(() {
-        _listItem = listItem;
-      });
-    });
   }
 
   final SecureStorage storage = SecureStorage();

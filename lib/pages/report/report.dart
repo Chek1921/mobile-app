@@ -22,11 +22,6 @@ class _ReportPageState extends State<ReportPage> {
   void initState() {
     super.initState();
     UsernameUpdate();
-    // widget._homeController.getReport(page).then((listItem) {
-      // setState(() {
-        // _listItem = listItem;
-      // });
-    // });
   }
 
   final SecureStorage storage = SecureStorage();

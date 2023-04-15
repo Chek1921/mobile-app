@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mobileapp/api/push_service.dart';
 import 'package:mobileapp/pages/news/news.dart';
 
 void main() {
   runApp(const MyApp());
+  PushService().connect();
 }
 
 class MyApp extends StatelessWidget {

@@ -82,7 +82,7 @@ class _ReportsPageState extends State<ReportsPage> {
       body: ListView.builder(
         itemCount: _listReports.length,
         itemBuilder: (context, index) {
-          final itemReports = _listReports[index];
+          final itemReports = _listReports[_listReports.length-index-1];
           return Container(
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),

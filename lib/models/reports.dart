@@ -6,11 +6,13 @@ class Reports {
   String aTitle;
   String aText;
   int vision;
-  String photo;
+  dynamic photo;
   Reports({required this.id, required this.vision, required this.title, required this.text, required this.timeCreate, required this.aTitle, required this.aText, required this.photo});
   
   factory Reports.fromJson(Map<String, dynamic> json) {
-    if (json['a_title'] == '') {
+    if (json['a_title'] == '' && json['vision'] == '2') {
+      json['a_title'] = 'Жалоба обработана';
+    } else if (json['a_title'] == ''){
       json['a_title'] = 'Ответа еще нет';
     }
     return Reports(

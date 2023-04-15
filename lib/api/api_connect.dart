@@ -7,7 +7,7 @@ import 'package:mobileapp/services/status_code.dart';
 import 'package:mobileapp/services/storage.dart';
 import 'api_models.dart';
 
-const _base = "http://13.50.176.175:8000/";
+const _base = "http://13.50.176.175:8000";
 const _signInURL = "/token/";
 const _refreshEndpoint = "/token/refresh/";
 const _reportsEndpoint = "/api/reports/";

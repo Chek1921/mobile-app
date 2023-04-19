@@ -16,11 +16,9 @@ class PushService {
     channel = IOWebSocketChannel.connect(
       Uri.parse('ws://13.50.176.175:8000/ws/notify/'),
     );
-    print("NSDKJFNKDJNFDJKFNJFNSDFNKNFJKFNKDNFNFJKSDFNFJKFNFJKDSKJ");
 
     channel.stream.listen((message) async {
       final data = json.decode(message);
-      print(data);
       String username = '';
       String? _username = await SecureStorage().getUsername();
       if (_username != null) {
@@ -28,7 +26,6 @@ class PushService {
       } else {
         username = '';
       }
-      print(username);
       if (username == data['username']) {
         NotificationService.showBigTextNotification(
           title: "Жалоба",
